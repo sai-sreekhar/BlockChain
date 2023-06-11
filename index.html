@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <input type="text" id="amount" />
+      <p id="balance"></p>
+      <button id="deposit">Deposit</button>
+      <button id="withdraw">Withdraw</button>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.js"
+      integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+
+    <script>
+      var contract;
+
+      $(document).ready(function () {
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+        var address = "0x1d8baC918a3f8568f775C010811F60762e689f44";
+        var abi = [
+          {
+            inputs: [
+              {
+                internalType: "int256",
+                name: "amount",
+                type: "int256",
+              },
+            ],
+            name: "deposit",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
+          {
+            inputs: [],
+            stateMutability: "nonpayable",
+            type: "constructor",
+          },
+          {
+            inputs: [
+              {
+                internalType: "int256",
+                name: "amount",
+                type: "int256",
+              },
+            ],
+            name: "withdraw",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
+          {
+            inputs: [],
+            name: "getBalance",
+            outputs: [
+              {
+                internalType: "int256",
+                name: "",
+                type: "int256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ];
+
+        contract = new web3.eth.Contract(abi, address);
+        contract.methods
+          .getBalance()
+          .call()
+          .then(function (balance) {
+            $("#balance").html(balance);
+          });
+      });
+    </script>
+  </body>
+</html>
